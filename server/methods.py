@@ -1,0 +1,2 @@
+def verifyUserData(data):
+    return
