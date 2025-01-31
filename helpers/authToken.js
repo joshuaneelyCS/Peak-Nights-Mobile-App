@@ -22,3 +22,13 @@ export async function getToken() {
         return null;
     }
 }
+
+export async function deleteToken() {
+    try {
+        await AsyncStorage.removeItem('token'); // Remove the token
+        console.log("Token deleted successfully!");
+    } catch {
+        console.error("Error retrieving token:", error);
+        return null;
+    }
+}

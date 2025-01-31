@@ -14,8 +14,8 @@ export const theme = {
         roseLight: '#1D1D1D',
     },
     fonts: {
-        medium: '500',
-        semibold: '600',
+        medium: "500",
+        semibold: "600",
         bold: '700',
         extraBold: '500',
     },

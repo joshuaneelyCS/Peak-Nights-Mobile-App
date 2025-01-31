@@ -24,6 +24,7 @@ const SignUp = () => {
             Alert.alert('Sign Up', "please fill all the fields!");
             return;
         }
+        
         setLoading(true)
         
         console.log({

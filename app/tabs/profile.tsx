@@ -1,22 +1,34 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, Image, Button, Pressable } from 'react-native'
+import React, { useContext } from 'react'
 import { hp, wp } from '../../helpers/common'
 import { theme } from '../../constants/theme'
 import ScreenWrapper from '../../components/ScreenWrapper'
+import { useRouter } from 'expo-router'
+import { AuthContext } from '../../context/authContext'
 
 const profile = () => {
-  return (
-  <ScreenWrapper bg='white'>
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.circle}>
-          <Image style={styles.image} resizeMode='contain' source={require('../../assets/images/profile_example.jpg')} />
-        </View>
-        <Text style={styles.nameText}>Joshua Neely</Text>
-      </View>
-    </View>
-    
-  </ScreenWrapper>
+
+    const { user } = useContext(AuthContext);
+
+    const router = useRouter();
+  
+    return (
+        <ScreenWrapper bg='white'>
+            {/* Header */}
+            <View style={styles.container}> 
+              <View>
+                  <Pressable style={styles.settingsText} onPress={()=> {router.push('/settings')}}>
+                      <Text>Settings</Text>
+                  </Pressable>
+              </View>
+              <View style={styles.header}>
+                  <View style={styles.circle}>
+                  <Image style={styles.image} resizeMode='contain' source={require('../../assets/images/profile_example.jpg')} />
+                  </View>
+                  <Text style={styles.nameText}>{user['first_name']} {user['last_name']}</Text>
+              </View>
+            </View>
+        </ScreenWrapper>
   )
 }
 
@@ -29,7 +41,8 @@ const styles = StyleSheet.create({
   header: {
     height: hp(20),
     justifyContent: 'center', // Centers vertically
-    alignItems: 'center', // Centers horizontally
+    alignItems: 'center',
+    gap: 20 // Centers horizontally
   },
   circle: {
     width: 100,
@@ -45,6 +58,12 @@ const styles = StyleSheet.create({
     resizeMode: 'cover', // Ensures the image fills the space without distorting
   },
   nameText: {
-
+    fontWeight: '600',
+    fontSize: 18,
+  },
+  settingsText: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end', // Pushes content to the right
+    paddingHorizontal: 20,
   }
 })

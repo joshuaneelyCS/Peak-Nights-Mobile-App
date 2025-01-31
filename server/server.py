@@ -62,29 +62,64 @@ def createUser():
 @app.route('/login', methods=['POST'])
 def login():
         data = request.get_json(silent=True)
+        
+        verified, user_uuid = verifyLogin(data['email'], data['password'])
 
-        mydb = database.init_db_connection()
-        cursor = mydb.cursor()
-
-        sql_uuid_query = "SELECT password, unique_id FROM users WHERE email = %s"
-        cursor.execute(sql_uuid_query, (data["email"],))
-
-        result = cursor.fetchone()
-
-        cursor.close()
-        mydb.close()
-
-        if result is None:  # If no user is found
+        if verified is None:  # If no user is found
             return jsonify({'success': False, 'message': 'Sorry! User does not exist'}), 401
 
-        password = result[0]
-        user_uuid = result[1]
-        auth_token = create_token(user_uuid)
+        if verified:
+            if user_uuid is not None:
 
-        if data["password"] == password:
-            return jsonify({'success': True, 'user_id': user_uuid, 'auth_token': auth_token})
+                auth_token = create_token(user_uuid)
+                
+                loginData = getLoginData(user_uuid)
+                
+                return jsonify({'success': True, 'first_name': loginData['first_name'], 'last_name': loginData['last_name'],'user_id': user_uuid, 'auth_token': auth_token})
+            else: 
+                return jsonify({'success': False, 'message': 'Something went wrong. No ID associated with account'})
         else:
             return jsonify({'success': False, 'message': 'Invalid email or password'})
+        
+
+def verifyLogin(email, password):
+    
+    mydb = database.init_db_connection()
+    cursor = mydb.cursor()
+
+    sql_uuid_query = "SELECT password, unique_id FROM users WHERE email = %s"
+    cursor.execute(sql_uuid_query, (email,))
+
+    result = cursor.fetchone()
+
+    cursor.close()
+    mydb.close()
+
+    if result[0] is None:
+        return None
+    else:
+        return (result[0] == password), result[1]
+
+def getLoginData(uid):
+    mydb = database.init_db_connection()
+    cursor = mydb.cursor()
+
+    user_data_query = "SELECT first_name, last_name FROM users WHERE unique_id = %s"
+    cursor.execute(user_data_query, (uid,))
+
+    result = cursor.fetchone()
+    data = {'first_name': result[0], 'last_name': result[1]}
+
+    cursor.close()
+    mydb.close()
+    
+    return data
+    
+
+    
+
+
+
 
 
 

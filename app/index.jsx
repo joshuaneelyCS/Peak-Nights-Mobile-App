@@ -1,10 +1,14 @@
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { getToken, storeToken } from '../helpers/authToken';
 import { hasVisitedWelcome } from '../helpers/hasVisited';
+import { AuthContext } from '../context/authContext'
 
 const Index = () => {
+
+    const { loadUser } = useContext(AuthContext);
+
     const router = useRouter();
 
     useEffect(() => {
@@ -13,7 +17,12 @@ const Index = () => {
             try {
                 const token = await getToken();
                 if (token) {
-                    router.replace('tabs'); // Redirect to the main app
+                    if (loadUser() != null) {
+                        router.replace('tabs'); // Redirect to the main app
+                    } else {
+                        const visited = await hasVisitedWelcome(); // Ensure this is awaited if async
+                    router.replace(visited ? 'login' : 'welcome');
+                    }
                 } else {
                     const visited = await hasVisitedWelcome(); // Ensure this is awaited if async
                     router.replace(visited ? 'login' : 'welcome');
