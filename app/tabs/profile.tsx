@@ -8,6 +8,7 @@ import { AuthContext } from '../../context/authContext'
 
 const profile = () => {
 
+    // This pulls the user data from AuthContext
     const { user } = useContext(AuthContext);
 
     const router = useRouter();
@@ -25,7 +26,7 @@ const profile = () => {
                   <View style={styles.circle}>
                   <Image style={styles.image} resizeMode='contain' source={require('../../assets/images/profile_example.jpg')} />
                   </View>
-                  <Text style={styles.nameText}>{user['first_name']} {user['last_name']}</Text>
+                  <Text style={styles.nameText}>{user?.first_name ?? "Guest"} {user?.last_name ?? ""}</Text>
               </View>
             </View>
         </ScreenWrapper>

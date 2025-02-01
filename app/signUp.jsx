@@ -99,7 +99,7 @@ const SignUp = () => {
                         Already have an account!
                     </Text>
                     <Pressable onPress={()=> router.push('login')}>
-                        <Text style={[styles.footerText, {color: theme.colors.primaryDark, fontWeight: theme.fonts.semibold}]}>
+                        <Text style={[styles.footerText, {color: theme.colors.black, fontWeight: theme.fonts.semibold}]}>
                             Login
                         </Text>
                     </Pressable>

@@ -7,14 +7,14 @@ import { deleteToken } from '../helpers/authToken'
 import { AuthContext } from '../context/authContext'
 
 const settings = () => {
-  const { logout } = useContext(AuthContext);
+  const { deleteAllUserData } = useContext(AuthContext);
   
-  const _logout = () => {
+  const logout = () => {
     
     deleteToken()
 
     // delete local user data
-    logout()
+    deleteAllUserData()
     
     router.replace('login');
   }
@@ -30,7 +30,7 @@ const settings = () => {
             <Text>Account</Text>
             <Text>Notifications</Text>
             <Text>Saved</Text>
-            <Pressable style={styles.backButton} onPress={()=>{_logout()}}>
+            <Pressable style={styles.backButton} onPress={()=>{logout()}}>
               <Text>Logout</Text>
             </Pressable>
             

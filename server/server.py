@@ -79,8 +79,7 @@ def login():
             else: 
                 return jsonify({'success': False, 'message': 'Something went wrong. No ID associated with account'})
         else:
-            return jsonify({'success': False, 'message': 'Invalid email or password'})
-        
+            return jsonify({'success': False, 'message': 'Invalid email or password'})     
 
 def verifyLogin(email, password):
     
@@ -95,8 +94,8 @@ def verifyLogin(email, password):
     cursor.close()
     mydb.close()
 
-    if result[0] is None:
-        return None
+    if result is None:
+        return None, None
     else:
         return (result[0] == password), result[1]
 

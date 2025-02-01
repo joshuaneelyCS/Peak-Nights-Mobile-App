@@ -14,7 +14,7 @@ import { AuthProvider, AuthContext } from '../context/authContext'
 
 const Login = () => {
 
-    const { login } = useContext(AuthContext);
+    const { setUserData } = useContext(AuthContext);
 
     // Router that allows movement between screens
     const router = useRouter();
@@ -38,27 +38,28 @@ const Login = () => {
 
         try {
 
-            // Send data to server to be authenticated
             const response = await axios.post(`http://${server.port}:5001/login`, {
                 email: emailRef.current, 
-                password: passwordRef.current})
+                password: passwordRef.current
+            }, {
+                timeout: 5000 // Timeout after 5 seconds
+            });
             
             if (response.data.success) {
-                console.log("Got user data!");
 
                 // Stores authetication token
                 await storeToken(response.data.auth_token);
                 
                 try {
+                    
                     // Login
-                    login({
+                    setUserData({
                         first_name: response.data.first_name,
                         last_name: response.data.last_name,
                         user_id: response.data.user_id
                     });
 
-
-                    console.log("User successfully stored");
+                    storeToken(response.data.auth_token)
                 } catch(error) {
                     console.log("Error: " + error);
                 }
@@ -71,8 +72,22 @@ const Login = () => {
               }
             
         } catch(error) {
-            console.error(error)
-            Alert.alert("Oops! Something went wrong. Please try again")
+            if (error.code === 'ECONNABORTED') {
+                console.error("Request timed out. Server might be down. Check the port?");
+                Alert.alert("Request timed out. Please try again later")
+            } else if (error.response) {
+                // Server responded with a status outside 2xx range
+                console.error("Server responded with error:", error.response.status, error.response.data);
+                Alert.alert(error.response.data.message)
+            } else if (error.request) {
+                // No response received (server might be offline)
+                console.error("No response received. Server might be down.");
+                Alert.alert("No response Received. Please try again later")
+            } else {
+                // Something else went wrong
+                console.error("Error:", error.message);
+                Alert.alert("Server responded with error. Sorry. Please try again later")
+            }
         }
         setLoading(false)
     }
