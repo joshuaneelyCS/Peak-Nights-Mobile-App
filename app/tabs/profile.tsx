@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View, Image, Button, Pressable } from 'react-native'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState, useCallback } from 'react'
 import { hp, wp } from '../../helpers/common'
 import { theme } from '../../constants/theme'
+import { useFocusEffect } from '@react-navigation/native';
 import ScreenWrapper from '../../components/ScreenWrapper'
 import { useRouter } from 'expo-router'
 import { AuthContext } from '../../context/authContext'
@@ -10,16 +11,23 @@ import ProfileImage from '@/components/ProfileImage'
 const profile = () => {
 
     // This pulls the user data from AuthContext
-    const { user } = useContext(AuthContext);
-
+    const { user, loadUserData } = useContext(AuthContext);
     const router = useRouter();
+
+    // ✅ Force data reload when screen is focused (navigating back)
+    useFocusEffect(
+      useCallback(() => {
+          console.log("🔄 Reloading user data...");
+          loadUserData(); // ✅ Ensures fresh data is loaded
+      }, [])
+    );
   
     return (
         <ScreenWrapper bg='white'>
             {/* Header */}
             <View>
                   <Pressable style={styles.settingsText} onPress={()=> {router.push('/settings')}}>
-                      <Text>Settings</Text>
+                      <Text style={{fontWeight: 'bold', fontSize: 14}}>Settings</Text>
                   </Pressable>
             </View>
             <View style={styles.container}> 
@@ -31,9 +39,9 @@ const profile = () => {
 
               <View style={styles.container}>
 
-                <Text>Swing dancer 🕺 | Lover of jazz 🎶 | Always down for a good line dance 💃 #PeakNights</Text>
-                <Text>Time Since Being a Member</Text>
-                <Text>Links to social Media </Text>
+                <Text>{user?.biography ?? ''}</Text>
+                <Text>{user?.instagram ?? ''}</Text>
+                <Text>Member Since January 20, 2003</Text>
 
                 <View style={styles.profileButtonContainer}>
                   <Pressable style={styles.profileButton} onPress={()=>{router.push('/editProfile')}}>
@@ -90,7 +98,7 @@ const styles = StyleSheet.create({
   profileButton: {
     backgroundColor: theme.colors.darkLight,
     flex: 1,
-    paddingVertical: 3,
+    paddingVertical: 5,
     borderRadius: 6,
     alignItems: 'center',
   },
@@ -98,7 +106,7 @@ const styles = StyleSheet.create({
     height: hp(20),
     justifyContent: 'center', // Centers vertically
     alignItems: 'center',
-    gap: 20 // Centers horizontally
+    gap: 10 // Centers horizontally
   },
   nameText: {
     fontWeight: '600',
@@ -108,5 +116,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end', // Pushes content to the right
     paddingHorizontal: 20,
+    
   }
 })

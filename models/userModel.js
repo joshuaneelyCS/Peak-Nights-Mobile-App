@@ -4,6 +4,8 @@ export const UserModel = {
     email: "No Email",
     profilePhoto: "No Image",
     token: "No Token",
+    biography: "",
+    instagram: "",
     preferences: {
         theme: "light",
         notifications: true

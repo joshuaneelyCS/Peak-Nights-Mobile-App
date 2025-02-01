@@ -7,7 +7,7 @@ def init_db_connection():
         host="localhost",
         user="root",
         password="lowdownJN",
-        database="users",
+        database="peak_nights",
     )
 
     return mydb

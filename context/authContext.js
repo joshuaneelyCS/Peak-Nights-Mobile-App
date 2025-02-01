@@ -42,14 +42,41 @@ export const AuthProvider = ({ children }) => {
             setUser(newUser);
         };
 
-    const addUserData = async (userData) => {
+    // ✅ Update user data while keeping existing fields
+    const addUserData = async (newData) => {
+        try {
+            if (!user) {
+                console.warn("No user data found, initializing new user.");
+                return;
+            }
 
-    }
+            const updatedUser = { ...user, ...newData }; // Merge old & new data
 
-    const removeUserData = async (userData) => {
+            await storeUser(updatedUser);  // Save to AsyncStorage
+            setUser(updatedUser);  // Update state
+        } catch (error) {
+            console.error("Error updating user data:", error);
+        }
+    };
 
-    }
+    // ✅ Remove a specific key from user data
+    const removeUserData = async (key) => {
+        try {
+            if (!user || !(key in user)) {
+                console.warn(`Key "${key}" does not exist in user data.`);
+                return;
+            }
 
+            const updatedUser = { ...user, ...UserModel};
+            delete updatedUser[key];  // Remove the key
+
+            await storeUser(updatedUser);  // Save to AsyncStorage
+            setUser(updatedUser);  // Update state
+        } catch (error) {
+            console.error("Error removing user data:", error);
+        }
+    };
+    
     // Logout function
     const deleteAllUserData = async () => {
         

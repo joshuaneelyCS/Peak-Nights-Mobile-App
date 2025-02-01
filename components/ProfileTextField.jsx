@@ -3,7 +3,7 @@ import React from 'react'
 import { theme } from '../constants/theme'
 import { hp, wp } from '../helpers/common'
 
-const ProfileTextField = ({title, style = {}, inputRef, ...props}) => {
+const ProfileTextField = ({title, style = {}, ...props}) => {
   return (
     <View style={[styles.container, style && style]}>
       <View style={styles.titleContainer}>
@@ -13,7 +13,7 @@ const ProfileTextField = ({title, style = {}, inputRef, ...props}) => {
         <TextInput
         style={{flex:1}}
         placeholderTextColor={theme.colors.textLight}
-        ref={inputRef && inputRef}
+        onChangeText={props.onChangeText}
         {...props}
         />
       </View>

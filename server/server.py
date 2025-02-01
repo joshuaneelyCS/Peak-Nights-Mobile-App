@@ -99,6 +99,34 @@ def verifyLogin(email, password):
     else:
         return (result[0] == password), result[1]
 
+@app.route('/setData', methods=['POST'])
+def setData():
+    data = request.get_json(silent=True)
+    mydb = database.init_db_connection()
+    cursor = mydb.cursor()
+
+    sql = """UPDATE users 
+         SET first_name = %s, 
+             last_name = %s, 
+             biography = %s, 
+             instagram = %s 
+         WHERE unique_id = %s"""
+
+    val = (
+        data["first_name"], 
+        data["last_name"], 
+        data["biography"], 
+        data["instagram"],
+        data["user_id"])
+
+    cursor.execute(sql, val)
+    mydb.commit()
+
+    cursor.close()
+    mydb.close()
+
+    return jsonify({'success': True})
+
 def getLoginData(uid):
     mydb = database.init_db_connection()
     cursor = mydb.cursor()
@@ -113,17 +141,6 @@ def getLoginData(uid):
     mydb.close()
     
     return data
-    
-
-    
-
-
-
-
-
-
-    
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
