@@ -9,7 +9,7 @@ import { AuthContext } from '../context/authContext'
 import axios from 'axios';
 import { server } from '@/constants/serverConnection';
 
-
+const API_URL_SET_DATA = `http://${server.port}:5001/users/setData`
 
 const EditProfile = () => {
 
@@ -20,36 +20,44 @@ const EditProfile = () => {
 
     const [firstName, setFirstName] = useState(user.first_name ?? '');
     const [lastName, setLastName] = useState(user.last_name ?? '');
-    const [biography, setBiography] = useState(user.biography ?? '');
+    const [bio, setBio] = useState(user.bio ?? '');
     const [instagram, setInstagram] = useState(user.instagram ?? '');
 
     const pickImage = () => {
 
     }
+    
     const saveData = async () => {
-        try{
-            const fieldData = { // data being sent
-                first_name: firstName, 
-                last_name: lastName, 
-                biography: biography,
-                instagram: instagram,
-                user_id: user.user_id
-            }
-            const response = await axios.post(`http://${server.port}:5001/setData`, fieldData
-                )
-                if (response.data.success == true) {
-
-                    // Data Saved!
-                    addUserData(fieldData)
-                    
-                    router.back();
-                } else {
-                    console.log("Data was not updated. There was an error")
+        try {
+            const response = await axios.post(API_URL_SET_DATA, {
+                user_id: user.user_id,
+                key: { user_id: user.user_id, },
+                users: { 
+                    first_name: firstName, 
+                    last_name: lastName
+                },
+                user_profiles: {
+                    bio: bio,
+                    instagram: instagram
                 }
+            });
+    
+            if (response.data.success) {
+                // Data saved successfully
+                addUserData({ 
+                    first_name: firstName, 
+                    last_name: lastName,
+                    bio: bio,
+                    instagram: instagram
+                })
+                router.back();
+            } else {
+                console.error("Error saving data:", response.data.message);
+            }
         } catch (error) {
-            console.error("❌ Error saving data:", error);
-    }
-}
+            console.error("Failed to save data:", error);
+        }
+    };
     
   return (
     <ScreenWrapper bg='white'>
@@ -84,8 +92,8 @@ const EditProfile = () => {
                 <ProfileTextField 
                 title="Bio"
                 placeholder="Enter text here"
-                defaultValue={biography}
-                onChangeText={setBiography}
+                defaultValue={bio}
+                onChangeText={setBio}
                 />
                 <ProfileTextField 
                 title="Instagram"

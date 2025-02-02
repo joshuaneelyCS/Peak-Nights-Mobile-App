@@ -60,6 +60,7 @@ const Login = () => {
                         API_URL_GET_DATA, {
                         params: {
                             user_id: response.data.user_id,
+                            table: 'users',
                             fields: [
                                 "first_name", 
                                 "last_name",

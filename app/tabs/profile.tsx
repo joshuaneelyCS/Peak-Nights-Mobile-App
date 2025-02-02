@@ -39,7 +39,7 @@ const Profile = () => {
 
               <View style={styles.container}>
 
-                <Text>{user?.biography ?? ''}</Text>
+                <Text>{user?.bio ?? ''}</Text>
                 <Text style={{marginVertical: 5}}>{user?.instagram ?? ''}</Text>
                 <Text >Member Since January 20, 2003</Text>
 

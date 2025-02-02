@@ -45,40 +45,63 @@ def create_user():
 
 @users.route('/setData', methods=['POST'])
 def set_user_data():
-    """Dynamically update user data"""
+    """Dynamically update user data for multiple tables"""
     data = request.get_json()
 
-    # Validate request
     if not data or 'user_id' not in data:
-        return jsonify({'success': False, 'message': 'User ID is required'}), 400
+        return jsonify({'success': False, 'message': 'Valid user_id is required for request'}), 400
+    data.pop('user_id')
 
-    user_id = data.pop('user_id')  # Remove user_id from data dictionary
+    # Validate request
+    if not data or 'key' not in data:
+        return jsonify({'success': False, 'message': 'Key is required for update'}), 400
 
-    if not data:
-        return jsonify({'success': False, 'message': 'No fields provided to update'}), 400
+    key = data.pop('key')  # Extract key object (conditions for WHERE clause)
 
-    # Dynamically create SQL query
-    set_clause = ", ".join([f"{key} = %s" for key in data.keys()])
-    values = list(data.values()) + [user_id]
-
-    sql = f"UPDATE users SET {set_clause} WHERE user_id = %s"
+    if not isinstance(key, dict) or not key:
+        return jsonify({'success': False, 'message': 'Key must be a non-empty dictionary'}), 400
 
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute(sql, values)
-    conn.commit()
+    try:
+        for table, fields in data.items():
+            print("Table: ", table)
+            print("Fields: ", fields)
+            if not isinstance(fields, dict) or not fields:
+                continue  # Skip empty or invalid table updates
 
-    cursor.close()
-    conn.close()
+            # Generate SET clause dynamically
+            set_clause = ", ".join([f"{col} = %s" for col in fields.keys()])
+            values = list(fields.values())
 
-    return jsonify({'success': True, 'message': 'User data updated successfully'})
+            # Generate WHERE clause dynamically
+            where_clause = " AND ".join([f"{col} = %s" for col in key.keys()])
+            values += list(key.values())
+            values = tuple(values)  # Add key values for WHERE condition
+            print("Values: ", values)
 
+            sql = f"UPDATE {table} SET {set_clause} WHERE {where_clause}"
+            print(sql)
+            cursor.execute(sql, values)
+
+        conn.commit()  # Commit all updates in a single transaction
+        return jsonify({'success': True, 'message': 'User data updated successfully'})
+
+    except Exception as e:
+        print(str(e))
+        conn.rollback()  # Rollback if there's an error
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+    finally:
+        cursor.close()
+        conn.close()
 
 @users.route('/getData', methods=['GET'])
 def get_user_data():
     """Dynamically retrieve user data"""
     user_id = request.args.get('user_id')
+    table = request.args.get('table')
 
     # ✅ Debugging: Print received values
     print(f"Received user_id: {user_id}")
@@ -101,7 +124,7 @@ def get_user_data():
     # ✅ Dynamically create SQL query
     try:
         fields_sql = ", ".join(fields)
-        sql = f"SELECT {fields_sql} FROM users WHERE user_id = %s"
+        sql = f"SELECT {fields_sql} FROM {table} WHERE user_id = %s"
 
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
