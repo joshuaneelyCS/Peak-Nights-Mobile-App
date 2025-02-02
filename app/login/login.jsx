@@ -9,8 +9,10 @@ import Input from '../../components/Input'
 import Button from '../../components/Button'
 import { server } from '../../constants/serverConnection'
 import axios from 'axios'
-import { getToken, storeToken } from '../../helpers/authToken'
-import { AuthProvider, AuthContext } from '../../context/authContext'
+import { storeToken } from '../../helpers/authToken'
+import { AuthContext } from '../../context/authContext'
+
+const API_URL = `http://${server.port}:5001/login`;
 
 const Login = () => {
 
@@ -38,7 +40,7 @@ const Login = () => {
 
         try {
 
-            const response = await axios.post(`http://${server.port}:5001/login`, {
+            const response = await axios.post(API_URL, {
                 email: emailRef.current, 
                 password: passwordRef.current
             }, {
@@ -56,6 +58,8 @@ const Login = () => {
                     setUserData({
                         first_name: response.data.first_name,
                         last_name: response.data.last_name,
+                        biography: response.data.biography,
+                        instagram: response.data.instagram,
                         user_id: response.data.user_id
                     });
 

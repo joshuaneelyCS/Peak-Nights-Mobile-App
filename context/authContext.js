@@ -54,6 +54,7 @@ export const AuthProvider = ({ children }) => {
             }
             // Merge old & new data
             const updatedUser = { ...user, ...newData }; 
+            console.log(updatedUser)
 
             // Save to AsyncStorage
             await storeUser(updatedUser);  

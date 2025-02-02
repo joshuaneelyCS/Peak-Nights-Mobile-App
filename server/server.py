@@ -44,13 +44,13 @@ def createUser():
 
     # TODO - Create a Created At Time field
 
-    sql = "INSERT INTO users (unique_id, first_name, last_name, email, password) VALUES (SUBSTRING(UUID(), 1, 6), %s, %s, %s, %s)"
+    sql = "INSERT INTO users (user_id, first_name, last_name, email, password) VALUES (SUBSTRING(UUID(), 1, 6), %s, %s, %s, %s)"
     val = (data["first_name"], data["last_name"], data["email"], data["password"])
     cursor.execute(sql, val)
     mydb.commit()
 
     # Query the users's ID number
-    sql_uuid_query = "SELECT unique_id FROM users WHERE email = %s"
+    sql_uuid_query = "SELECT user_id FROM users WHERE email = %s"
     cursor.execute(sql_uuid_query, (data["email"],))
     user_uuid = cursor.fetchone()[0]
 
@@ -61,32 +61,55 @@ def createUser():
 
 @app.route('/login', methods=['POST'])
 def login():
-        data = request.get_json(silent=True)
+    def getLoginData(uid):
+        mydb = database.init_db_connection()
+        cursor = mydb.cursor()
+
+        user_data_query = """
+        SELECT first_name, last_name, biography, instagram
+        FROM users WHERE user_id = %s"""
+        cursor.execute(user_data_query, (uid,))
+
+        result = cursor.fetchone()
+
+        cursor.close()
+        mydb.close()
         
-        verified, user_uuid = verifyLogin(data['email'], data['password'])
+        return result
 
-        if verified is None:  # If no user is found
-            return jsonify({'success': False, 'message': 'Sorry! User does not exist'}), 401
+    data = request.get_json(silent=True)
+    
+    verified, user_uuid = verifyLogin(data['email'], data['password'])
 
-        if verified:
-            if user_uuid is not None:
+    if verified is None:  # If no user is found
+        return jsonify({'success': False, 'message': 'Sorry! User does not exist'}), 401
 
-                auth_token = create_token(user_uuid)
-                
-                loginData = getLoginData(user_uuid)
-                
-                return jsonify({'success': True, 'first_name': loginData['first_name'], 'last_name': loginData['last_name'],'user_id': user_uuid, 'auth_token': auth_token})
-            else: 
-                return jsonify({'success': False, 'message': 'Something went wrong. No ID associated with account'})
-        else:
-            return jsonify({'success': False, 'message': 'Invalid email or password'})     
+    if verified:
+        if user_uuid is not None:
+
+            auth_token = create_token(user_uuid)
+            
+            loginData = getLoginData(user_uuid)
+
+            return jsonify({
+                'success': True, 
+                'first_name': loginData[0], 
+                'last_name': loginData[1],
+                'biography': loginData[2],
+                'instagram': loginData[3],
+                'user_id': user_uuid, 
+                'auth_token': auth_token})
+        else: 
+            return jsonify({'success': False, 'message': 'Something went wrong. No ID associated with account'})
+    else:
+        return jsonify({'success': False, 'message': 'Invalid email or password'})     
 
 def verifyLogin(email, password):
     
     mydb = database.init_db_connection()
     cursor = mydb.cursor()
 
-    sql_uuid_query = "SELECT password, unique_id FROM users WHERE email = %s"
+    sql_uuid_query = "SELECT password, user_id FROM users WHERE email = %s"
     cursor.execute(sql_uuid_query, (email,))
 
     result = cursor.fetchone()
@@ -111,7 +134,7 @@ def setData():
              last_name = %s, 
              biography = %s, 
              instagram = %s 
-         WHERE unique_id = %s"""
+         WHERE user_id = %s"""
 
     val = (
         data["first_name"], 
@@ -128,20 +151,30 @@ def setData():
 
     return jsonify({'success': True})
 
-def getLoginData(uid):
+@app.route('/getUsersNotInMembers', methods=['GET'])
+def get_users_not_in_members():
+    search_query = request.args.get('search', '')
+
     mydb = database.init_db_connection()
-    cursor = mydb.cursor()
+    cursor = mydb.cursor(dictionary=True)  # Use dictionary=True to return dict results
 
-    user_data_query = "SELECT first_name, last_name FROM users WHERE unique_id = %s"
-    cursor.execute(user_data_query, (uid,))
+    # ✅ Query: Get users that are NOT in the members table
+    sql_query = """
+        SELECT u.user_id AS id, CONCAT(u.first_name, ' ', u.last_name) AS name 
+        FROM users u
+        LEFT JOIN members m ON u.user_id = m.user_id
+        WHERE m.user_id IS NULL AND (u.first_name LIKE %s OR u.last_name LIKE %s);
+    """
 
-    result = cursor.fetchone()
-    data = {'first_name': result[0], 'last_name': result[1]}
+    cursor.execute(sql_query, (f"%{search_query}%", f"%{search_query}%"))
+    users_not_in_members = cursor.fetchall()
 
     cursor.close()
     mydb.close()
-    
-    return data
+
+    return jsonify(users_not_in_members)
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)

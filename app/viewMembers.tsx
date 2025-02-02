@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { FlatList, Pressable, TextInput } from 'react-native-gesture-handler';
 import ScreenWrapper from '@/components/ScreenWrapper';
 import { useRouter } from 'expo-router';
-import UserListItem from '../components/UserListItem'
+import MemberSearchListComponent from '../components/ListComponent/MemberSearchListComponent';
 
 const membersData = [
     { id: "1", name: "Alice Johnson" },
@@ -51,6 +51,10 @@ const membersData = [
               value={searchText}
               onChangeText={setSearchText}
             />
+            <Pressable onPress={()=>{router.push('/addMember')}}>
+              <Text style={{paddingLeft: 10}}>Add</Text>
+            </Pressable>
+            
           </View>
     
           {/* Member List */}
@@ -58,7 +62,7 @@ const membersData = [
             data={filteredMembers}
             keyExtractor={item => item.id}
             renderItem={({ item }) => 
-              <UserListItem name={item.name} size={60} />
+              <MemberSearchListComponent name={item.name} size={60} />
             }
           />
         </View>

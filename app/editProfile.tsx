@@ -11,7 +11,7 @@ import { server } from '@/constants/serverConnection';
 
 
 
-const editProfile = () => {
+const EditProfile = () => {
 
     // This pulls the user data from AuthContext
     const { user, addUserData } = useContext(AuthContext);
@@ -103,7 +103,7 @@ const editProfile = () => {
   )
 }
 
-export default editProfile
+export default EditProfile
 
 const styles = StyleSheet.create({
     header: {

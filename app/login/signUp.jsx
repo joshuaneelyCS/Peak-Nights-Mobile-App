@@ -10,6 +10,8 @@ import Button from '../../components/Button'
 import axios from 'axios';
 import { server } from '../../constants/serverConnection'
 
+const API_URL = `http://${server.port}:5001/createUser`;
+
 const SignUp = () => {
     const router = useRouter();
 
@@ -35,7 +37,7 @@ const SignUp = () => {
           });
 
         try {
-            const response = await axios.post(`http://${server.port}:5001/createUser`, 
+            const response = await axios.post(API_URL, 
                 { // data being sent
                 first_name: firstNameRef.current, 
                 last_name: lastNameRef.current, 

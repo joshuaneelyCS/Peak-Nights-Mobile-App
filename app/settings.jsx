@@ -6,7 +6,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { deleteToken } from '../helpers/authToken'
 import { AuthContext } from '../context/authContext'
 
-const settings = () => {
+const Settings = () => {
   const { deleteAllUserData } = useContext(AuthContext);
   
   const logout = () => {
@@ -31,7 +31,7 @@ const settings = () => {
             <Text>Notifications</Text>
             <Text>Saved</Text>
             <Text>Admin Tools</Text>
-            <Pressable style={styles.backButton} onPress={()=>{router.push('/manageMemberships')}}>
+            <Pressable style={styles.backButton} onPress={()=>{router.push('/viewMembers')}}>
               <Text>Manage Memberships</Text>
             </Pressable>
             <Pressable style={styles.backButton} onPress={()=>{logout()}}>
@@ -44,7 +44,7 @@ const settings = () => {
   )
 }
 
-export default settings
+export default Settings
 
 const styles = StyleSheet.create({
   container: {

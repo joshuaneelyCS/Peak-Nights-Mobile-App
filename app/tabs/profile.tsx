@@ -8,7 +8,9 @@ import { useRouter } from 'expo-router'
 import { AuthContext } from '../../context/authContext'
 import ProfileImage from '@/components/ProfileImage'
 
-const profile = () => {
+
+
+const Profile = () => {
 
     // This pulls the user data from AuthContext
     const { user, loadUserData } = useContext(AuthContext);
@@ -26,7 +28,7 @@ const profile = () => {
         <ScreenWrapper bg='white'>
             {/* Header */}
             <View>
-                  <Pressable style={styles.settingsText} onPress={()=> {router.push('/settings')}}>
+                  <Pressable style={styles.settingsText} onPress={()=> {router.push('/Settings')}}>
                       <Text style={{fontWeight: 'bold', fontSize: 14}}>Settings</Text>
                   </Pressable>
             </View>
@@ -44,7 +46,7 @@ const profile = () => {
                 <Text >Member Since January 20, 2003</Text>
 
                 <View style={styles.profileButtonContainer}>
-                  <Pressable style={styles.profileButton} onPress={()=>{router.push('/editProfile')}}>
+                  <Pressable style={styles.profileButton} onPress={()=>{router.push('/EditProfile')}}>
                     <Text >Edit Profile</Text>
                   </Pressable>
                   <Pressable style={styles.profileButton}>
@@ -79,7 +81,7 @@ const profile = () => {
   )
 }
 
-export default profile
+export default Profile
 
 const styles = StyleSheet.create({
   container: {
