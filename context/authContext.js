@@ -36,13 +36,13 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-        const setUserData = async (userData) => {
-            const newUser = { ...UserModel, ...userData };
-        
-            await storeUser(newUser);
-        
-            setUser(newUser);
-        };
+    const setUserData = async (userData) => {
+        const newUser = { ...UserModel, ...userData };
+    
+        await storeUser(newUser);
+    
+        setUser(newUser);
+    };
 
     // Update user data while keeping existing fields
     const addUserData = async (newData) => {

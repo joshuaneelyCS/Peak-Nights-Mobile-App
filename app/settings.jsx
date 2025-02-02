@@ -30,6 +30,10 @@ const settings = () => {
             <Text>Account</Text>
             <Text>Notifications</Text>
             <Text>Saved</Text>
+            <Text>Admin Tools</Text>
+            <Pressable style={styles.backButton} onPress={()=>{router.push('/manageMemberships')}}>
+              <Text>Manage Memberships</Text>
+            </Pressable>
             <Pressable style={styles.backButton} onPress={()=>{logout()}}>
               <Text>Logout</Text>
             </Pressable>
