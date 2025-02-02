@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, TextInput, View, Alert } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import ScreenWrapper from '../../components/ScreenWrapper'
 import { StatusBar } from 'expo-status-bar'
 import { useRouter } from 'expo-router'
@@ -9,11 +9,15 @@ import Input from '../../components/Input'
 import Button from '../../components/Button'
 import axios from 'axios';
 import { server } from '../../constants/serverConnection'
+import { AuthContext } from '../../context/authContext'
+import { storeToken } from '../../helpers/authToken'
 
 const API_URL_CREATE_USER = `http://${server.port}:5001/users/createUser`;
 
 const SignUp = () => {
     const router = useRouter();
+
+    const { setUserData } = useContext(AuthContext);
 
     const emailRef = useRef("");
     const passwordRef = useRef("");
@@ -37,19 +41,24 @@ const SignUp = () => {
                 email: emailRef.current, 
                 password: passwordRef.current
             })
-            
+
             if (response.data.success) {
+
+                await storeToken(response.data.auth_token);
 
                 // Login
                 setUserData({
                     first_name: firstNameRef.current, 
-                    last_name: lastNameRef.current})
+                    last_name: lastNameRef.current,
+                    user_id: response.data.user_id
+                })
                     
-                router.push('tabs');
+                router.push('/tabs');
               } else {
-                console.log("Connected to server. But it wasn't a success.");
+                console.log("Error: ");
               }
         } catch(error) {
+            console.log(error)
             Alert.alert("Oops! Something went wrong. Please Try Again")
         }
         setLoading(false)

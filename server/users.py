@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from database import get_db_connection
-from auth import hash_password
+from auth import hash_password, create_auth_token
+import uuid
 
 users = Blueprint("users", __name__)
 
@@ -10,8 +11,9 @@ users = Blueprint("users", __name__)
 def create_user():
     """Create a new user"""
     data = request.get_json()
-    print(data)
+
     hashed_password = hash_password(data["password"])
+    user_id = str(uuid.uuid4())[24:34].upper()
 
     # username
     sql = """INSERT INTO users (
@@ -20,9 +22,10 @@ def create_user():
     last_name, 
     email, 
     password_hash) 
-    VALUES (SUBSTRING(UUID(), 1, 10), %s, %s, %s, %s)"""
+    VALUES (%s, %s, %s, %s, %s)"""
 
-    val = (data["first_name"], 
+    val = (user_id,
+           data["first_name"], 
            data["last_name"], 
            data["email"], 
            hashed_password)
@@ -37,7 +40,14 @@ def create_user():
         cursor.close()
         conn.close()
 
-        return jsonify({'success': True, 'message': 'User created successfully'})
+        # I need to fetch the user id somewhere here.
+        # How should I do it? Should i make a separate func
+        # How would I do this? I don't want to make a another
+        # Query with email, but is this the only way
+        
+        auth_token = create_auth_token(user_id)
+
+        return jsonify({'success': True, 'auth_token': auth_token, 'user_id': user_id})
 
     except Exception as e:
         print("Error:", e)
@@ -50,7 +60,8 @@ def set_user_data():
 
     if not data or 'user_id' not in data:
         return jsonify({'success': False, 'message': 'Valid user_id is required for request'}), 400
-    data.pop('user_id')
+    user_id = data.pop('user_id')
+    print(user_id)
 
     # Validate request
     if not data or 'key' not in data:
