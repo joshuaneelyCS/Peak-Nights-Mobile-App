@@ -6,7 +6,7 @@ import { useRouter } from "expo-router";
 import MemberAddListComponent from "../components/ListComponent/MemberAddListComponent";
 import { server } from "@/constants/serverConnection";
 
-const API_URL = `http://${server.port}:5001/getUsersNotInMembers`; // ✅ Updated API URL
+const API_URL = `http://${server.port}:5001/members/getUsersNotInMembers`; // ✅ Updated API URL
 
 const AddMember = () => {
   const [searchText, setSearchText] = useState("");
