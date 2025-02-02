@@ -37,7 +37,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="myPass"
+          name="MyPass"
           options={{
             title: 'My Pass',
             tabBarIcon: ({ color }) => <IconSymbol size={28} name="qrcode" color={color} />,

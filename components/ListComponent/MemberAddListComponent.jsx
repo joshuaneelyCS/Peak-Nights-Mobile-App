@@ -3,7 +3,7 @@ import React from 'react'
 import ProfileImage from '../ProfileImage';
 import { useRouter } from 'expo-router';
 
-const MemberAddListComponent = ({name, size}) => {
+const MemberAddListComponent = ({name, id, size}) => {
     const router = useRouter();
 
   return (
