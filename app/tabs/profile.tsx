@@ -8,8 +8,6 @@ import { useRouter } from 'expo-router'
 import { AuthContext } from '../../context/authContext'
 import ProfileImage from '@/components/ProfileImage'
 
-
-
 const Profile = () => {
 
     // This pulls the user data from AuthContext

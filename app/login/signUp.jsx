@@ -10,7 +10,7 @@ import Button from '../../components/Button'
 import axios from 'axios';
 import { server } from '../../constants/serverConnection'
 
-const API_URL = `http://${server.port}:5001/createUser`;
+const API_URL_CREATE_USER = `http://${server.port}:5001/users/createUser`;
 
 const SignUp = () => {
     const router = useRouter();
@@ -28,16 +28,9 @@ const SignUp = () => {
         }
         
         setLoading(true)
-        
-        console.log({
-            first_name: firstNameRef.current,
-            last_name: lastNameRef.current,
-            email: emailRef.current,
-            password: passwordRef.current,
-          });
 
         try {
-            const response = await axios.post(API_URL, 
+            const response = await axios.post(API_URL_CREATE_USER, 
                 { // data being sent
                 first_name: firstNameRef.current, 
                 last_name: lastNameRef.current, 
@@ -46,14 +39,16 @@ const SignUp = () => {
             })
             
             if (response.data.success) {
-                console.log("Connected to server successfully");
-                console.log(`User Created. ID: ${response.data.user_id}`)
+
+                // Login
+                setUserData({
+                    first_name: firstNameRef.current, 
+                    last_name: lastNameRef.current})
+                    
                 router.push('tabs');
               } else {
                 console.log("Connected to server. But it wasn't a success.");
               }
-            
-            
         } catch(error) {
             Alert.alert("Oops! Something went wrong. Please Try Again")
         }
@@ -102,7 +97,7 @@ const SignUp = () => {
                     <Text style={styles.footerText}>
                         Already have an account!
                     </Text>
-                    <Pressable onPress={()=> router.push('/login/login')}>
+                    <Pressable onPress={()=> router.push('/login/Login')}>
                         <Text style={[styles.footerText, {color: theme.colors.black, fontWeight: theme.fonts.semibold}]}>
                             Login
                         </Text>

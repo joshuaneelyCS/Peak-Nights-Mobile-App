@@ -17,7 +17,6 @@ const Index = () => {
                 if (!token) {
                     return handleNoUser();
                 }
-
                 await loadUserData(); // ✅ Load user first
                 setHasCheckedAuth(true); // ✅ Allow the next useEffect() to trigger
             } catch (error) {
@@ -33,7 +32,7 @@ const Index = () => {
     useEffect(() => {
         if (hasCheckedAuth) {
             if (user) {
-                console.log("User found! Navigating to tabs.");
+                console.log("User found!", user.first_name);
                 router.replace('tabs');
             } else {
                 console.log("Login worked but no user data found.");
@@ -44,7 +43,7 @@ const Index = () => {
 
     const handleNoUser = async () => {
         const visited = await hasVisitedWelcome();
-        router.replace(visited ? '/login/login' : '/login/welcome');
+        router.replace(visited ? '/login/Login' : '/login/welcome');
     };
 
     if (isLoading) return null; // ✅ Prevents unnecessary re-renders

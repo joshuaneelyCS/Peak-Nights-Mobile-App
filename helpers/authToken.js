@@ -5,7 +5,7 @@ export async function storeToken(token) {
         if (token === null || token === undefined) {
             await AsyncStorage.removeItem('token'); // Remove instead of storing null
         } else {
-            console.log(`token:${token} stored! `)
+            console.log(`Token: Stored!`)
             await AsyncStorage.setItem('token', token);
         }
     } catch (error) {

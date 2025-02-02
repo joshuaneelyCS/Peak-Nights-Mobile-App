@@ -61,7 +61,7 @@ const AddMember = () => {
           <FlatList
             data={members}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <MemberAddListComponent name={item.name} size={60} />}
+            renderItem={({ item }) => <MemberAddListComponent name={item.name} id={item.id} size={60} />}
           />
         )}
       </View>

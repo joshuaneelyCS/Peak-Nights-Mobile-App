@@ -1,3 +1,4 @@
+"""
 from flask import Flask, request, jsonify
 import mysql.connector
 import database
@@ -65,9 +66,9 @@ def login():
         mydb = database.init_db_connection()
         cursor = mydb.cursor()
 
-        user_data_query = """
+        user_data_query = "" "
         SELECT first_name, last_name, biography, instagram
-        FROM users WHERE user_id = %s"""
+        FROM users WHERE user_id = %s"" "
         cursor.execute(user_data_query, (uid,))
 
         result = cursor.fetchone()
@@ -129,12 +130,12 @@ def setData():
     mydb = database.init_db_connection()
     cursor = mydb.cursor()
 
-    sql = """UPDATE users 
+    sql = "" "UPDATE users 
          SET first_name = %s, 
              last_name = %s, 
              biography = %s, 
              instagram = %s 
-         WHERE user_id = %s"""
+         WHERE user_id = %s" ""
 
     val = (
         data["first_name"], 
@@ -159,12 +160,12 @@ def get_users_not_in_members():
     cursor = mydb.cursor(dictionary=True)  # Use dictionary=True to return dict results
 
     # ✅ Query: Get users that are NOT in the members table
-    sql_query = """
+    sql_query = " ""
         SELECT u.user_id AS id, CONCAT(u.first_name, ' ', u.last_name) AS name 
         FROM users u
         LEFT JOIN members m ON u.user_id = m.user_id
         WHERE m.user_id IS NULL AND (u.first_name LIKE %s OR u.last_name LIKE %s);
-    """
+    " ""
 
     cursor.execute(sql_query, (f"%{search_query}%", f"%{search_query}%"))
     users_not_in_members = cursor.fetchall()
@@ -174,7 +175,10 @@ def get_users_not_in_members():
 
     return jsonify(users_not_in_members)
 
-
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return jsonify({'success': False, 'message': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
+"""

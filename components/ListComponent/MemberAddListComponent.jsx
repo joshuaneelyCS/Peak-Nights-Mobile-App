@@ -7,7 +7,7 @@ const MemberAddListComponent = ({name, id, size}) => {
     const router = useRouter();
 
   return (
-    <Pressable style={[styles.container, {height: size}]} onPress={()=>{router.push('AddMemberConfirm')}}>
+    <Pressable style={[styles.container, {height: size}]} onPress={() => router.push({ pathname: 'AddMemberConfirm', params: { id } })}>
         <ProfileImage source={require("../../assets/images/profile_example.jpg")} size={size * 0.8} />
         <View style={styles.memberItem}>
             <Text style={styles.memberText}>{name}</Text>

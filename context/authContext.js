@@ -30,6 +30,7 @@ export const AuthProvider = ({ children }) => {
 
             } else {
                 console.log("AuthProvider: No user found in storage.");
+                setUser('error')
             }
         } catch (error) {
             console.error("Error loading user data:", error);
@@ -38,7 +39,7 @@ export const AuthProvider = ({ children }) => {
 
     const setUserData = async (userData) => {
         const newUser = { ...UserModel, ...userData };
-    
+
         await storeUser(newUser);
     
         setUser(newUser);

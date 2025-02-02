@@ -41,6 +41,7 @@ const EditProfile = () => {
 
                     // Data Saved!
                     addUserData(fieldData)
+                    
                     router.back();
                 } else {
                     console.log("Data was not updated. There was an error")

@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, TextInput, View, Alert } from 'react-native'
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import ScreenWrapper from '../../components/ScreenWrapper'
 import { StatusBar } from 'expo-status-bar'
 import { useRouter } from 'expo-router'
@@ -12,11 +12,12 @@ import axios from 'axios'
 import { storeToken } from '../../helpers/authToken'
 import { AuthContext } from '../../context/authContext'
 
-const API_URL = `http://${server.port}:5001/login`;
+const API_URL_LOGIN = `http://${server.port}:5001/auth/login`;
+const API_URL_GET_DATA = `http://${server.port}:5001/users/getData`;
 
 const Login = () => {
 
-    const { setUserData } = useContext(AuthContext);
+    const { setUserData, user } = useContext(AuthContext);
 
     // Router that allows movement between screens
     const router = useRouter();
@@ -40,7 +41,7 @@ const Login = () => {
 
         try {
 
-            const response = await axios.post(API_URL, {
+            const response = await axios.post(API_URL_LOGIN, {
                 email: emailRef.current, 
                 password: passwordRef.current
             }, {
@@ -54,46 +55,47 @@ const Login = () => {
                 
                 try {
                     
+                    // Call getData from the server to get the data I need to set up the server
+                    const userDataResponse = await axios.get(
+                        API_URL_GET_DATA, {
+                        params: {
+                            user_id: response.data.user_id,
+                            fields: [
+                                "first_name", 
+                                "last_name",
+                            ]  // Request only needed fields
+                        }
+                    });
+
                     // Login
                     setUserData({
-                        first_name: response.data.first_name,
-                        last_name: response.data.last_name,
-                        biography: response.data.biography,
-                        instagram: response.data.instagram,
+                        first_name: userDataResponse.data.user_data.first_name,
+                        last_name: userDataResponse.data.user_data.last_name,
                         user_id: response.data.user_id
                     });
 
-                    storeToken(response.data.auth_token)
                 } catch(error) {
                     console.log("Error: " + error);
                 }
+
                 
-                // Moves to the main app
-                router.push('tabs');
+
+                router.push("tabs");
 
               } else {
                 Alert.alert(response.data.message);
               }
             
-        } catch(error) {
-            if (error.code === 'ECONNABORTED') {
-                console.error("Request timed out. Server might be down. Check the port?");
-                Alert.alert("Request timed out. Please try again later")
-            } else if (error.response) {
-                // Server responded with a status outside 2xx range
-                console.error("Server responded with error:", error.response.status, error.response.data);
-                Alert.alert(error.response.data.message)
-            } else if (error.request) {
-                // No response received (server might be offline)
-                console.error("No response received. Server might be down.");
-                Alert.alert("No response Received. Please try again later")
-            } else {
-                // Something else went wrong
-                console.error("Error:", error.message);
-                Alert.alert("Server responded with error. Sorry. Please try again later")
+            } catch (error) {
+                if (error.code === 'ECONNABORTED') {
+                    Alert.alert("Request timed out. Please try again later");
+                } else if (error.response) {
+                    Alert.alert(error.response.data.message);
+                } else {
+                    Alert.alert("Server error. Please try again later");
+                }
             }
-        }
-        setLoading(false)
+            setLoading(false);
     }
 
   return (
