@@ -1,14 +1,14 @@
 import { Pressable, StyleSheet, Text, TextInput, View, Alert } from 'react-native'
 import React, { useRef, useState } from 'react'
-import ScreenWrapper from '../components/ScreenWrapper'
+import ScreenWrapper from '../../components/ScreenWrapper'
 import { StatusBar } from 'expo-status-bar'
 import { useRouter } from 'expo-router'
-import { hp, wp } from '../helpers/common'
-import { theme } from '../constants/theme'
-import Input from '../components/Input'
-import Button from '../components/Button'
+import { hp, wp } from '../../helpers/common'
+import { theme } from '../../constants/theme'
+import Input from '../../components/Input'
+import Button from '../../components/Button'
 import axios from 'axios';
-import { server } from '../constants/serverConnection'
+import { server } from '../../constants/serverConnection'
 
 const SignUp = () => {
     const router = useRouter();
@@ -35,11 +35,13 @@ const SignUp = () => {
           });
 
         try {
-            const response = await axios.post(`http://${server.port}:5001/createUser`, {
+            const response = await axios.post(`http://${server.port}:5001/createUser`, 
+                { // data being sent
                 first_name: firstNameRef.current, 
                 last_name: lastNameRef.current, 
                 email: emailRef.current, 
-                password: passwordRef.current})
+                password: passwordRef.current
+            })
             
             if (response.data.success) {
                 console.log("Connected to server successfully");
@@ -98,7 +100,7 @@ const SignUp = () => {
                     <Text style={styles.footerText}>
                         Already have an account!
                     </Text>
-                    <Pressable onPress={()=> router.push('login')}>
+                    <Pressable onPress={()=> router.push('/login/login')}>
                         <Text style={[styles.footerText, {color: theme.colors.black, fontWeight: theme.fonts.semibold}]}>
                             Login
                         </Text>

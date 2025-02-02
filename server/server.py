@@ -102,6 +102,7 @@ def verifyLogin(email, password):
 @app.route('/setData', methods=['POST'])
 def setData():
     data = request.get_json(silent=True)
+
     mydb = database.init_db_connection()
     cursor = mydb.cursor()
 

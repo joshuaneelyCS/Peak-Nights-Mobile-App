@@ -18,11 +18,13 @@ export const AuthProvider = ({ children }) => {
         loadUserData();
     }, []);
 
+    // Loads the user from async storage
     const loadUserData = async () => {
-    
+        
         try {
+            // Tries to get user from the Async Storage
             const storedUser = await getUser();
-    
+            
             if (storedUser) {
                 setUser(storedUser);
 
@@ -42,36 +44,45 @@ export const AuthProvider = ({ children }) => {
             setUser(newUser);
         };
 
-    // ✅ Update user data while keeping existing fields
+    // Update user data while keeping existing fields
     const addUserData = async (newData) => {
         try {
+            // if there is no user
             if (!user) {
                 console.warn("No user data found, initializing new user.");
                 return;
             }
+            // Merge old & new data
+            const updatedUser = { ...user, ...newData }; 
 
-            const updatedUser = { ...user, ...newData }; // Merge old & new data
+            // Save to AsyncStorage
+            await storeUser(updatedUser);  
 
-            await storeUser(updatedUser);  // Save to AsyncStorage
-            setUser(updatedUser);  // Update state
+            // Update state
+            setUser(updatedUser);  
         } catch (error) {
             console.error("Error updating user data:", error);
         }
     };
 
-    // ✅ Remove a specific key from user data
+    // Remove a specific key from user data
     const removeUserData = async (key) => {
         try {
             if (!user || !(key in user)) {
                 console.warn(`Key "${key}" does not exist in user data.`);
                 return;
             }
-
+            // Make sure it still contains fields from the usermodel
             const updatedUser = { ...user, ...UserModel};
-            delete updatedUser[key];  // Remove the key
 
-            await storeUser(updatedUser);  // Save to AsyncStorage
-            setUser(updatedUser);  // Update state
+            // Remove the key
+            delete updatedUser[key];  
+
+            // Save to AsyncStorage
+            await storeUser(updatedUser);  
+            
+            // Update state
+            setUser(updatedUser);  
         } catch (error) {
             console.error("Error removing user data:", error);
         }

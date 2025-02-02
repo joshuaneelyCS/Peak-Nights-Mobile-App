@@ -40,8 +40,8 @@ const profile = () => {
               <View style={styles.container}>
 
                 <Text>{user?.biography ?? ''}</Text>
-                <Text>{user?.instagram ?? ''}</Text>
-                <Text>Member Since January 20, 2003</Text>
+                <Text style={{marginVertical: 5}}>{user?.instagram ?? ''}</Text>
+                <Text >Member Since January 20, 2003</Text>
 
                 <View style={styles.profileButtonContainer}>
                   <Pressable style={styles.profileButton} onPress={()=>{router.push('/editProfile')}}>
@@ -73,9 +73,6 @@ const profile = () => {
                     <Text >Add Favorite Dance Song</Text>
                   </Pressable>
                 </View>
-
-                
-                
               </View>
             </View>
         </ScreenWrapper>

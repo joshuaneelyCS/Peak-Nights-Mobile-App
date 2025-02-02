@@ -1,12 +1,12 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import ScreenWrapper from '../components/ScreenWrapper'
+import ScreenWrapper from '../../components/ScreenWrapper'
 import { StatusBar } from 'expo-status-bar'
-import { wp, hp } from '../helpers/common'
-import { theme } from '../constants/theme'
-import Button from '../components/Button'
+import { wp, hp } from '../../helpers/common'
+import { theme } from '../../constants/theme'
+import Button from '../../components/Button'
 import { useRouter } from 'expo-router'
-import { storeVisitFlag } from '../helpers/hasVisited'
+import { storeVisitFlag } from '../../helpers/hasVisited'
 
 const welcome = () => {
     const router = useRouter();
@@ -18,7 +18,7 @@ const welcome = () => {
       <StatusBar style="dark"/>
       <View style={styles.container}>
             {/* welcome image */}
-            <Image style={styles.welcomeImage} resizeMode='contain' source={require('../assets/images/welcome.png')} />
+            <Image style={styles.welcomeImage} resizeMode='contain' source={require('../../assets/images/welcome.png')} />
 
             {/* title */}
             <View style={{gap:20}}>

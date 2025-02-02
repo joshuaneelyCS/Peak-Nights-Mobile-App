@@ -33,7 +33,7 @@ const editProfile = () => {
                 last_name: lastName, 
                 biography: biography,
                 instagram: instagram,
-                user_id: user.id
+                user_id: user.user_id
             }
             const response = await axios.post(`http://${server.port}:5001/setData`, fieldData
                 )
