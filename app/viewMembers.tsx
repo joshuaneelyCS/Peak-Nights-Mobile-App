@@ -51,7 +51,7 @@ const membersData = [
               value={searchText}
               onChangeText={setSearchText}
             />
-            <Pressable onPress={()=>{router.push('/addMember')}}>
+            <Pressable onPress={()=>{router.push('/AddMember')}}>
               <Text style={{paddingLeft: 10}}>Add</Text>
             </Pressable>
             
