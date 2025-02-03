@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, Pressable, TextInput } from "react-native-gesture-handler";
 import ScreenWrapper from "@/components/ScreenWrapper";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import MemberAddListComponent from "@/components/ListComponent/MemberAddListComponent";
 import { server } from "@/constants/serverConnection";
 
@@ -13,6 +13,13 @@ const AddMember = () => {
   const [members, setMembers] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  useFocusEffect(
+    useCallback(() => {
+        console.log("🔄 Reloading user data...");
+        fetchUsersNotInMembers(searchText); // ✅ Ensures fresh data is loaded
+    }, [])
+  );
 
   // ✅ Fetch users NOT in members when the component mounts
   useEffect(() => {

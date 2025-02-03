@@ -7,9 +7,9 @@ import ScreenWrapper from '@/components/ScreenWrapper';
 import ProfileImage from '@/components/ProfileImage';
 
 const API_URL_GET_USER = `http://${server.port}:5001/users/getData`;
-const API_URL_ADD_MEMBER = `http://${server.port}:5001/members/addMember`;
+const API_URL_REMOVE_MEMBER = `http://${server.port}:5001/members/removeMember`;
 
-const AddMemberConfirm = () => {
+const EditMember = () => {
 
     // This is passed from the previous page
     const { id, name } = useLocalSearchParams();
@@ -37,6 +37,7 @@ const AddMemberConfirm = () => {
         
         if (response.data.success) {
           setUserToShow(response.data.user_data)
+          console.log();
         }
 
       } catch(error) {
@@ -45,10 +46,10 @@ const AddMemberConfirm = () => {
       }
     }
 
-    const addMember = async () => {
+    const removeMember = async () => {
       try {
       const request = await axios.post(
-        API_URL_ADD_MEMBER, {
+        API_URL_REMOVE_MEMBER, {
           user_id: id
         });
 
@@ -72,8 +73,8 @@ const AddMemberConfirm = () => {
         <ProfileImage source={require("@/assets/images/profile_example.jpg")} size={100} />
         <Text>{userToShow?.["first_name"] || " "} {userToShow?.["last_name"] || " "}</Text>
         <View style={styles.addMember}>
-          <Pressable onPress={addMember}>
-            <Text style={{fontSize: 30}}>Add Member</Text>
+          <Pressable onPress={removeMember}>
+            <Text style={{fontSize: 30}}>Remove Member</Text>
           </Pressable>
         </View>
       </View>
@@ -82,13 +83,12 @@ const AddMemberConfirm = () => {
   )
 }
 
-export default AddMemberConfirm
+export default EditMember
 
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     gap: 10,
-
   },
   addMember: {
     paddingVertical: 60,

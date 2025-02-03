@@ -64,7 +64,32 @@ def add_member():
     except Exception as error:
         print(error)
 
+@members.route('/removeMember', methods=['POST'])
+def remove_member():
+    data = request.get_json(silent=True)
 
+    sql="DELETE FROM members WHERE user_id = %s"
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        
+        cursor.execute(sql, (data["user_id"],))
+        conn.commit()
+
+        affected_rows = cursor.rowcount
+
+        cursor.close()
+        conn.close()
+
+        if affected_rows == 0:
+            return jsonify({'success': False, 'message': 'Error removing member'})
+
+        return jsonify({'success': True, 'Message': 'Member successfully removed'})
+        
+
+    except Exception as error:
+        print(error)
 @members.route('/searchUsersNotInMembers', methods=['GET'])
 def search_users_not_in_members():
     search_query = request.args.get('search', '')
