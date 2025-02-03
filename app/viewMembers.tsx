@@ -5,6 +5,7 @@ import ScreenWrapper from '@/components/ScreenWrapper';
 import { useRouter } from 'expo-router';
 import MemberSearchListComponent from '../components/ListComponent/MemberSearchListComponent';
 import { server } from '@/constants/serverConnection';
+import { theme } from '@/constants/theme';
 
 const API_URL = `http://${server.port}:5001/members/searchMembers`;
 
@@ -42,9 +43,21 @@ const API_URL = `http://${server.port}:5001/members/searchMembers`;
       <ScreenWrapper bg='white'>
         <View style={styles.container}>
           <View style={styles.header}>
-            <Pressable onPress={()=>{router.back()}}>
-              <Text style={styles.backButtonText}>Back</Text>
+
+            <View style={styles.title}>
+              <Pressable onPress={()=>{router.back()}}>
+                <Text style={styles.backButtonText}>Back</Text>
+              </Pressable>
+              <Text style={{fontWeight: 'bold', fontSize: 25}}>Members</Text>
+            </View>
+
+            <Pressable onPress={()=>{router.push('/AddMember')}}>
+              <Text style={{paddingLeft: 10}}>Add</Text>
             </Pressable>
+
+          </View>
+
+          <View style={styles.searchRow}>
             {/* Search Bar */}
             <TextInput
               style={styles.searchBar}
@@ -52,10 +65,6 @@ const API_URL = `http://${server.port}:5001/members/searchMembers`;
               value={searchText}
               onChangeText={setSearchText}
             />
-            <Pressable onPress={()=>{router.push('/AddMember')}}>
-              <Text style={{paddingLeft: 10}}>Add</Text>
-            </Pressable>
-            
           </View>
     
           {/* Member List */}
@@ -82,8 +91,15 @@ const API_URL = `http://${server.port}:5001/members/searchMembers`;
       paddingHorizontal: 20,
       backgroundColor: "#fff"
     },
-    header: {
+    title: {
       flexDirection: 'row',
+    },
+    header: {
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+      height: 40,
+    },
+    searchRow: {
       height: 50,
     },
     backButtonText: {

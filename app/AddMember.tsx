@@ -41,18 +41,23 @@ const AddMember = () => {
   return (
     <ScreenWrapper bg="white">
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Pressable onPress={() => router.back()}>
-            <Text style={styles.backButtonText}>Back</Text>
-          </Pressable>
-          {/* Search Bar */}
-          <TextInput
-            style={styles.searchBar}
-            placeholder="Search users..."
-            value={searchText}
-            onChangeText={setSearchText}
-          />
-        </View>
+      <View style={styles.header}>
+            <Pressable onPress={()=>{router.back()}}>
+              <Text style={styles.backButtonText}>Back</Text>
+            </Pressable>
+            <Text style={{fontWeight: 'bold', fontSize: 25}}>Add Members</Text>
+          </View>
+            
+          <View style={styles.searchRow}>
+
+            {/* Search Bar */}
+            <TextInput
+              style={styles.searchBar}
+              placeholder="Search users..."
+              value={searchText}
+              onChangeText={setSearchText}
+            />
+          </View>
 
         {/* ✅ Show Loading Indicator */}
         {loading ? (
@@ -79,6 +84,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   header: {
+    flexDirection: "row",
+    height: 40,
+  },
+  searchRow: {
     flexDirection: "row",
     height: 50,
   },
