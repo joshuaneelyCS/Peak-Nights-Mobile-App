@@ -16,8 +16,32 @@ def verify_member():
         'message': 'Valid membership ID' if data['membership_id'] == "11111" else 'Invalid membership ID'
     })
 
-@members.route('/getUsersNotInMembers', methods=['GET'])
-def get_users_not_in_members():
+@members.route('/searchMembers', methods=['GET'])
+def search_members():
+    search_query = request.args.get('search', '')
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    # ✅ Query: Get only users who are members
+    sql_query = """
+    SELECT u.user_id AS id, CONCAT(u.first_name, ' ', u.last_name) AS name 
+    FROM users u
+    JOIN members m ON u.user_id = m.user_id
+    WHERE u.first_name LIKE %s OR u.last_name LIKE %s;
+    """
+
+    cursor.execute(sql_query, (f"%{search_query}%", f"%{search_query}%"))
+    search_results = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify(search_results)
+
+
+@members.route('/searchUsersNotInMembers', methods=['GET'])
+def search_users_not_in_members():
     search_query = request.args.get('search', '')
 
     conn = get_db_connection()

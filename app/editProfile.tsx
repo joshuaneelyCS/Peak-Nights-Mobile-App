@@ -28,6 +28,7 @@ const EditProfile = () => {
     }
     
     const saveData = async () => {
+
         try {
             const response = await axios.post(API_URL_SET_DATA, {
                 user_id: user.user_id,

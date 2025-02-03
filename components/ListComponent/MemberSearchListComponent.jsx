@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image } from 'react-native'
 import React from 'react'
 import ProfileImage from '../ProfileImage';
 
-const MemberSearchListComponent = ({name, size}) => {
+const MemberSearchListComponent = ({name, id, size}) => {
   return (
     <View style={[styles.container, {height: size}]}>
         <ProfileImage source={require("../../assets/images/profile_example.jpg")} size={size * 0.8} />

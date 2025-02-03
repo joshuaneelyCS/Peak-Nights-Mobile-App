@@ -1,41 +1,42 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { FlatList, Pressable, TextInput } from 'react-native-gesture-handler';
 import ScreenWrapper from '@/components/ScreenWrapper';
 import { useRouter } from 'expo-router';
 import MemberSearchListComponent from '../components/ListComponent/MemberSearchListComponent';
+import { server } from '@/constants/serverConnection';
 
-const membersData = [
-    { id: "1", name: "Alice Johnson" },
-    { id: "2", name: "Bob Smith" },
-    { id: "3", name: "Charlie Brown" },
-    { id: "4", name: "David White" },
-    { id: "5", name: "Emma Davis" },
-    { id: "6", name: "Frank Wilson" }
-  ];
-  
+const API_URL = `http://${server.port}:5001/members/searchMembers`;
+
   const manageMemberships = () => {
     const [searchText, setSearchText] = useState("");
-    const [filteredMembers, setFilteredMembers] = useState<{ id: string; name: string }[]>([]);
+    const [members, setMembers] = useState<{ id: string; name: string }[]>([]);
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
-    // Sort members alphabetically
-    useEffect(() => {
-      const sortedMembers = [...membersData].sort((a, b) =>
-        a.name.localeCompare(b.name)
-      );
-      setFilteredMembers(sortedMembers);
-    }, []);
-  
-    // Filter members based on search input
-    useEffect(() => {
-      const filtered = membersData
-        .filter(member =>
-          member.name.toLowerCase().includes(searchText.toLowerCase())
-        )
-        .sort((a, b) => a.name.localeCompare(b.name));
-      setFilteredMembers(filtered);
-    }, [searchText]);
+    // ✅ Fetch users NOT in members when the component mounts
+  useEffect(() => {
+    fetchMembers();
+  }, []);
+
+  // ✅ Fetch users based on search input
+  useEffect(() => {
+    fetchMembers(searchText);
+  }, [searchText]);
+
+  // ✅ Function to fetch users not in members
+  const fetchMembers = async (query = "") => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}?search=${query}`);
+      const data = await response.json();
+      setMembers(data); // Assume API returns an array of { id, name }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   
     return (
       <ScreenWrapper bg='white'>
@@ -58,13 +59,15 @@ const membersData = [
           </View>
     
           {/* Member List */}
+          {loading ? (
+          <ActivityIndicator size="large" color="blue" />
+        ) : (
           <FlatList
-            data={filteredMembers}
-            keyExtractor={item => item.id}
-            renderItem={({ item }) => 
-              <MemberSearchListComponent name={item.name} size={60} />
-            }
+            data={members}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => <MemberSearchListComponent name={item.name} id={item.id} size={60} />}
           />
+        )}
         </View>
       </ScreenWrapper>
     );
