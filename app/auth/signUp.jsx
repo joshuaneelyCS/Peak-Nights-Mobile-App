@@ -106,7 +106,7 @@ const SignUp = () => {
                     <Text style={styles.footerText}>
                         Already have an account!
                     </Text>
-                    <Pressable onPress={()=> router.push('/login/Login')}>
+                    <Pressable onPress={()=> router.push('/auth/Login')}>
                         <Text style={[styles.footerText, {color: theme.colors.black, fontWeight: theme.fonts.semibold}]}>
                             Login
                         </Text>

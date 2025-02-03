@@ -43,7 +43,7 @@ const Index = () => {
 
     const handleNoUser = async () => {
         const visited = await hasVisitedWelcome();
-        router.replace(visited ? '/login/Login' : '/login/welcome');
+        router.replace(visited ? '/auth/Login' : '/auth/welcome');
     };
 
     if (isLoading) return null; // ✅ Prevents unnecessary re-renders

@@ -3,8 +3,14 @@ import { useState } from 'react';
 import { Button, StyleSheet, Text, View, Image, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import { server } from '../../constants/serverConnection'
+import { Dimensions } from 'react-native';
+import debounce from 'lodash.debounce';
+
+const API_URL_MEMBER_VERIFY = `http://${server.port}:5001/members/verify`
 
 export default function App() {
+
+  const { width, height } = Dimensions.get('window'); 
 
   const [permission, requestPermission] = useCameraPermissions();
 
@@ -29,28 +35,42 @@ export default function App() {
     );
   }
 
-  const handleBarCodeScanned = async (scanningResult: BarcodeScanningResult) => {
-    const { data } = scanningResult;
+  const handleBarCodeScanned = debounce(async (scanningResult: BarcodeScanningResult) => {
+    if (scanned) return;
+  
+    const { data, bounds } = scanningResult;
+
+    if (!bounds) return; // ✅ Some devices might not support bounds
+
+    const { origin, size } = bounds; 
+    const centerX = origin.x + size.width / 2;
+    const centerY = origin.y + size.height / 2;
+
+    // ✅ Check if the scan is in the center 40% of the screen
+    if (centerX < width * 0.4 || centerX > width * 0.6 || centerY < height * 0.4 || centerY > height * 0.6) {
+      return; // ❌ Ignore if QR code is not centered
+    }
+
     setScanned(true);
     setLoading(true);
-
+    console.log("✅ Scanned:", data);
+  
     try {
-      // Send scanned data to the Flask server
-      const response = await axios.post(`http://${server.port}:5001/verify`, { membership_id: data });
-
+      const response = await axios.post(API_URL_MEMBER_VERIFY, { user_id: data });
+  
       if (response.data.success) {
         setVerificationStatus('success');
       } else {
         setVerificationStatus('failure');
       }
-
     } catch (error) {
-      console.error('Error verifying QR code:', error);
+
       setVerificationStatus('failure');
     } finally {
       setLoading(false);
+      setTimeout(() => setScanned(false), 4000);
     }
-  };
+  }, 100); // ✅ Prevents rapid scanning within 1 second
 
   const resetScanner = () => {
     setScanned(false);

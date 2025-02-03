@@ -1,16 +1,16 @@
 import { Pressable, StyleSheet, Text, TextInput, View, Alert } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import ScreenWrapper from '../../components/ScreenWrapper'
+import ScreenWrapper from '@/components/ScreenWrapper'
 import { StatusBar } from 'expo-status-bar'
 import { useRouter } from 'expo-router'
-import { hp, wp } from '../../helpers/common'
-import { theme } from '../../constants/theme'
-import Input from '../../components/Input'
-import Button from '../../components/Button'
-import { server } from '../../constants/serverConnection'
+import { hp, wp } from '@/helpers/common'
+import { theme } from '@/constants/theme'
+import Input from '@/components/Input'
+import Button from '@/components/Button'
+import { server } from '@/constants/serverConnection'
 import axios from 'axios'
-import { storeToken } from '../../helpers/authToken'
-import { AuthContext } from '../../context/authContext'
+import { storeToken } from '@/helpers/authToken'
+import { AuthContext } from '@/context/authContext'
 
 const API_URL_LOGIN = `http://${server.port}:5001/auth/login`;
 const API_URL_GET_DATA = `http://${server.port}:5001/users/getData`;
@@ -136,7 +136,7 @@ const Login = () => {
                         <Text style={styles.footerText}>
                             Don't have an account?
                         </Text>
-                        <Pressable onPress={()=> router.push('/login/signUp')}>
+                        <Pressable onPress={()=> router.push('/auth/signUp')}>
                             <Text style={[styles.footerText, {color: theme.colors.primaryDark, fontWeight: theme.fonts.semibold}]}>
                                 Sign Up
                             </Text>
