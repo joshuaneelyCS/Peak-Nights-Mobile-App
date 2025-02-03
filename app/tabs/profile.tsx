@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View, Image, Button, Pressable } from 'react-native'
 import React, { useContext, useEffect, useState, useCallback } from 'react'
-import { hp, wp } from '../../helpers/common'
-import { theme } from '../../constants/theme'
+import { hp, wp } from '@/helpers/common'
+import { theme } from '@/constants/theme'
 import { useFocusEffect } from '@react-navigation/native';
-import ScreenWrapper from '../../components/ScreenWrapper'
+import ScreenWrapper from '@/components/ScreenWrapper'
 import { useRouter } from 'expo-router'
-import { AuthContext } from '../../context/authContext'
+import { AuthContext } from '@/context/authContext'
 import ProfileImage from '@/components/ProfileImage'
 
 const Profile = () => {
@@ -26,7 +26,7 @@ const Profile = () => {
         <ScreenWrapper bg='white'>
             {/* Header */}
             <View>
-                  <Pressable style={styles.settingsText} onPress={()=> {router.push('/Settings')}}>
+                  <Pressable style={styles.settingsText} onPress={()=> {router.push('/profile/Settings')}}>
                       <Text style={{fontWeight: 'bold', fontSize: 14}}>Settings</Text>
                   </Pressable>
             </View>
@@ -44,7 +44,7 @@ const Profile = () => {
                 <Text >Member Since January 20, 2003</Text>
 
                 <View style={styles.profileButtonContainer}>
-                  <Pressable style={styles.profileButton} onPress={()=>{router.push('/EditProfile')}}>
+                  <Pressable style={styles.profileButton} onPress={()=>{router.push('/profile/EditProfile')}}>
                     <Text >Edit Profile</Text>
                   </Pressable>
                   <Pressable style={styles.profileButton}>

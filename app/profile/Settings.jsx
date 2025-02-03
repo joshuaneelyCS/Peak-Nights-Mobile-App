@@ -1,10 +1,10 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useContext } from 'react'
-import ScreenWrapper from '../components/ScreenWrapper'
+import ScreenWrapper from '@/components/ScreenWrapper'
 import { useRouter } from 'expo-router'
 import { ScrollView } from 'react-native-gesture-handler'
-import { deleteToken } from '../helpers/authToken'
-import { AuthContext } from '../context/authContext'
+import { deleteToken } from '@/helpers/authToken'
+import { AuthContext } from '@/context/authContext'
 
 const Settings = () => {
   const { deleteAllUserData } = useContext(AuthContext);
@@ -30,8 +30,8 @@ const Settings = () => {
             <Text>Account</Text>
             <Text>Notifications</Text>
             <Text>Saved</Text>
-            <Text>Admin Tools</Text>
-            <Pressable style={styles.backButton} onPress={()=>{router.push('/viewMembers')}}>
+            <Text style={{fontWeight: 'bold', paddingTop: 5}}>Admin Tools:</Text>
+            <Pressable style={styles.backButton} onPress={()=>{router.push('/profile/settings/admin/manageMemberships/viewMembers')}}>
               <Text>Manage Memberships</Text>
             </Pressable>
             <Pressable style={styles.backButton} onPress={()=>{logout()}}>

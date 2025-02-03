@@ -5,7 +5,7 @@ import ProfileImage from '../ProfileImage';
 const MemberSearchListComponent = ({name, id, size}) => {
   return (
     <View style={[styles.container, {height: size}]}>
-        <ProfileImage source={require("../../assets/images/profile_example.jpg")} size={size * 0.8} />
+        <ProfileImage source={require("@/assets/images/profile_example.jpg")} size={size * 0.8} />
         <View style={styles.memberItem}>
             <Text style={styles.memberText}>{name}</Text>
             <Text style={styles.renewalText}>Last Renewal</Text>

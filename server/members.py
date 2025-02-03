@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from database import get_db_connection
 
-members = Blueprint("membership", __name__)
+members = Blueprint("members", __name__)
 
 @members.route('/verify', methods=['POST'])
 def verify_member():
@@ -38,6 +38,31 @@ def search_members():
     conn.close()
 
     return jsonify(search_results)
+
+@members.route('/addMember', methods=['POST'])
+def add_member():
+    data = request.get_json(silent=True)
+    sql = """INSERT INTO members (user_id) VALUES (%s)"""
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute(sql, (data['user_id'],))
+        conn.commit()
+
+        affected_rows = cursor.rowcount
+
+        cursor.close()
+        conn.close()
+
+        if affected_rows == 0:
+            return jsonify({'success': False, 'message': 'Error inserting member'})
+
+        return jsonify({'success': True, 'Message': 'User is now a member'})
+    
+    except Exception as error:
+        print(error)
 
 
 @members.route('/searchUsersNotInMembers', methods=['GET'])

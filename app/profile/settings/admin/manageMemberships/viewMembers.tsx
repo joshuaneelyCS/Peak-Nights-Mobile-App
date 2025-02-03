@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { FlatList, Pressable, TextInput } from 'react-native-gesture-handler';
 import ScreenWrapper from '@/components/ScreenWrapper';
 import { useRouter } from 'expo-router';
-import MemberSearchListComponent from '../components/ListComponent/MemberSearchListComponent';
+import MemberSearchListComponent from '../../../../../components/ListComponent/MemberSearchListComponent';
 import { server } from '@/constants/serverConnection';
 import { theme } from '@/constants/theme';
 
@@ -51,7 +51,7 @@ const API_URL = `http://${server.port}:5001/members/searchMembers`;
               <Text style={{fontWeight: 'bold', fontSize: 25}}>Members</Text>
             </View>
 
-            <Pressable onPress={()=>{router.push('/AddMember')}}>
+            <Pressable onPress={()=>{router.push('/profile/settings/admin/manageMemberships/AddMember')}}>
               <Text style={{paddingLeft: 10}}>Add</Text>
             </Pressable>
 

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { FlatList, Pressable, TextInput } from "react-native-gesture-handler";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { useRouter } from "expo-router";
-import MemberAddListComponent from "../components/ListComponent/MemberAddListComponent";
+import MemberAddListComponent from "@/components/ListComponent/MemberAddListComponent";
 import { server } from "@/constants/serverConnection";
 
 const API_URL = `http://${server.port}:5001/members/searchUsersNotInMembers`; // ✅ Updated API URL

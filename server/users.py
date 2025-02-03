@@ -125,6 +125,15 @@ def get_user_data():
 
     if not user_id or not fields:
         return jsonify({'success': False, 'message': 'User ID and fields are required'}), 400
+    
+    # ✅ Define allowed tables and their fields (prevents SQL Injection)
+    allowed_tables = {
+        "users": {"first_name", "last_name", "email", "biography", "instagram"},
+        "user_profiles": {"user_id", "profile_picture", "phone", "fun_facts"}
+    }
+
+    if table not in allowed_tables:
+        return jsonify({'success': False, 'message': 'Invalid table name'}), 400
 
     # Validate fields before querying
     allowed_fields = {"first_name", "last_name", "email", "biography", "instagram"}

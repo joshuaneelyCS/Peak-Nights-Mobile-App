@@ -2,10 +2,10 @@ import { StyleSheet, Text, View, Pressable } from 'react-native'
 import React, { useContext, useRef, useState } from 'react'
 import { useRouter } from 'expo-router'
 import ScreenWrapper from '@/components/ScreenWrapper';
-import ProfileImage from '../components/ProfileImage';
-import ProfileTextField from '../components/ProfileTextField'
+import ProfileImage from '@/components/ProfileImage';
+import ProfileTextField from '@/components/ProfileTextField'
 import { theme } from '@/constants/theme';
-import { AuthContext } from '../context/authContext'
+import { AuthContext } from '@/context/authContext'
 import axios from 'axios';
 import { server } from '@/constants/serverConnection';
 
@@ -73,7 +73,7 @@ const EditProfile = () => {
             </View>
             
             <Pressable onPress={()=>{pickImage}} style={styles.profileImage}>
-                <ProfileImage source={require('../assets/images/profile_example.jpg')} size={100} />
+                <ProfileImage source={require('@/assets/images/profile_example.jpg')} size={100} />
                 <Text>Edit Picture</Text>
             </Pressable>
             <View style={{paddingTop: 15}}>

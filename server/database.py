@@ -13,5 +13,4 @@ db_pool = mysql.connector.pooling.MySQLConnectionPool(
 )
 
 def get_db_connection():
-    print("getting connection")
     return db_pool.get_connection()
