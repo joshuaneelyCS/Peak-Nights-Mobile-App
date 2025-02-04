@@ -16,7 +16,7 @@ const Settings = () => {
     // delete local user data
     deleteAllUserData()
     
-    router.replace('login/Login');
+    router.replace('auth/Login');
   }
 
   const router = useRouter();

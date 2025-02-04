@@ -1,4 +1,4 @@
 export const server = {
-    port: '192.168.86.217',
-    portSchool: '10.37.230.100'
+    portHome: '192.168.86.217',
+    port: '10.37.230.100'
 }
