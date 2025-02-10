@@ -10,31 +10,59 @@ import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import StageListComponent from '../../../../../components/ListComponent/StageListComponent';
 
 const API_URL_GET_STAGE_DATA = `http://${server.port}:5001/course/getStages`;
+const API_URL_GET_VIDEO_IN_STAGE_DATA = `http://${server.port}:5001/course/getVideosInStages`;
 
 const CourseOverview = () => {
     const { user } = useContext(AuthContext);
     const [stages, setStages] = useState([]);
+    const [videos, setVideos] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        setLoading(true);
         getStages();
+        getVideosInStages();
+        setLoading(false);
     }, []);
 
     const getStages = async () => {
         try {
             const response = await axios.get(API_URL_GET_STAGE_DATA, {
-                params: {
-                    user_id: user.user_id
-                }
+                params: { user_id: user.user_id }
             });
             if (response.data.success) {
-                setStages(response.data.stage_ids);
+                setStages(response.data.stages);
             }
         } catch (error) {
             console.log("Here's an error:", error);
         } finally {
             setLoading(false);
         }
+    };
+
+    const getVideosInStages = async () => {
+        try {
+            const response = await axios.get(API_URL_GET_VIDEO_IN_STAGE_DATA, {
+                params: { user_id: user.user_id }
+            });
+            if (response.data.success) {
+                setVideos(response.data.videos);
+            }
+        } catch (error) {
+            console.log("Error fetching videos:", error);
+        }
+    };
+
+    // Function to get and sort videos for a specific stage
+    const getVideosForStage = (stageId) => {
+        return videos
+            .filter(video => video.stage_id === stageId) // Get videos for the stage
+            .sort((a, b) => { // Sort: "main" videos first, then by video_order
+                if (a.type === b.type) {
+                    return a.video_order - b.video_order; // Sort by order
+                }
+                return a.type === "main" ? -1 : 1; // "main" videos first
+            });
     };
 
     return (
@@ -49,12 +77,16 @@ const CourseOverview = () => {
                     </Pressable>
                 </View>
 
-                {/* Replace ScrollView with FlatList */}
+                {/* Use FlatList to display stages */}
                 <FlatList
                     data={stages}
-                    keyExtractor={(item) => item.toString()}
+                    keyExtractor={(item) => item.stage_id.toString()}
                     renderItem={({ item }) => (
-                        <StageListComponent key={item} stage={item} />
+                        <StageListComponent 
+                            key={item.stage_id} 
+                            stage={item.stage_order} 
+                            videos={getVideosForStage(item.stage_id)} // Pass sorted videos
+                        />
                     )}
                     contentContainerStyle={styles.flatListContent}
                     ListEmptyComponent={<Text style={styles.noStagesText}>No stages available.</Text>}
