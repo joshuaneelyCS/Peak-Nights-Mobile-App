@@ -43,7 +43,9 @@ def get_videos_in_stages():
     if not user_id:
         return jsonify({'success': False, 'message': 'User ID is required'})
     
-    sql = "SELECT * FROM join_stages_videos"
+    sql = """SELECT * 
+        FROM join_stages_videos 
+        JOIN videos ON join_stages_videos.video_id = videos.video_id"""
 
     try:
         conn = get_db_connection()

@@ -46,6 +46,7 @@ const CourseOverview = () => {
                 params: { user_id: user.user_id }
             });
             if (response.data.success) {
+                //console.log(response.data.videos);
                 setVideos(response.data.videos);
             }
         } catch (error) {

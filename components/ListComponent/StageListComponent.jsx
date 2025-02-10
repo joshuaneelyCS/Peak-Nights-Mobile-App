@@ -15,14 +15,14 @@ const StageListComponent = ({ stage, videos }) => {
             easing: Easing.ease,
             useNativeDriver: false,
         }).start();
-  
+        
         setExpanded(!expanded);
     };
 
     // Dynamic height adjustment based on number of videos
     const heightInterpolation = animation.interpolate({
         inputRange: [0, 1],
-        outputRange: [0, videos.length * 40 + 50], // Adjust height dynamically
+        outputRange: [0, (videos.length) * 15 + 120], // Adjust height dynamically
     });
 
     const opacityInterpolation = animation.interpolate({
@@ -52,7 +52,7 @@ const StageListComponent = ({ stage, videos }) => {
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item }) => (
                             <Text style={styles.videoItem}>
-                                • {item.type === "main" ? "Main" : "Extra"} - {item.video_order}: {item.video_id}
+                                {item.type === "main" ? "Main" : "Extra"} - {item.name}
                             </Text>
                         )}
                     />
