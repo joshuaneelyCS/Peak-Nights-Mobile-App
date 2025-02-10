@@ -3,6 +3,7 @@ from config import Config
 from auth import auth
 from users import users
 from members import members
+from course import course
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -10,6 +11,7 @@ app.config.from_object(Config)
 app.register_blueprint(auth, url_prefix="/auth")
 app.register_blueprint(users, url_prefix="/users")
 app.register_blueprint(members, url_prefix="/members")
+app.register_blueprint(course, url_prefix="/course")
 
 @app.errorhandler(Exception)
 def handle_exception(e):
